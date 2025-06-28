@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="pageTitle">Loading Store...</title>
+  <meta name="description" id="pageDescription" content="Online store powered by WhatsApp Store Maker">
+  
+  <!-- Open Graph / Social Media Preview -->
+  <meta property="og:title" id="ogTitle" content="Loading Store...">
+  <meta property="og:description" id="ogDescription" content="Shop our amazing products!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" id="ogUrl" content="">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Default theme (green) */
+      --primary-color: #25D366;
+      --primary-dark: #128C7E;
+      --primary-light: #dcf8c6;
+      --accent-color: #075e54;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --bg-primary: #f9f9f9;
+      --bg-secondary: #ffffff;
+      --shadow: 0 2px 12px rgba(0,0,0,0.1);
+      --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+      --border-radius: 12px;
+      --border-radius-small: 8px;
+    }
+
+    /* Theme variations */
+    .theme-blue {
+      --primary-color: #2196F3;
+      --primary-dark: #1976D2;
+      --primary-light: #e3f2fd;
+      --accent-color: #0d47a1;
+    }
+
+    .theme-purple {
+      --primary-color: #9C27B0;
+      --primary-dark: #7B1FA2;
+      --primary-light: #f3e5f5;
+      --accent-color: #4a148c;
+    }
+
+    .theme-orange {
+      --primary-color: #FF9800;
+      --primary-dark: #F57C00;
+      --primary-light: #fff3e0;
+      --accent-color: #e65100;
+    }
+
+    .theme-pink {
+      --primary-color: #E91E63;
+      --primary-dark: #C2185B;
+      --primary-light: #fce4ec;
+      --accent-color: #880e4f;
+    }
+
+    .theme-dark {
+      --primary-color: #424242;
+      --primary-dark: #212121;
+      --primary-light: #f5f5f5;
+      --accent-color: #000000;
+      --bg-primary: #303030;
+      --bg-secondary: #424242;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid var(--primary-light);
+      border-top: 6px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 2rem;
+    }
+
+    .loading-text {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Store Header */
+    .store-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .store-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255,255,255,0.03) 10px,
+        rgba(255,255,255,0.03) 20px
+      );
+      animation: slide 20s linear infinite;
+    }
+
+    @keyframes slide {
+      0% { transform: translateX(-50px) translateY(-50px); }
+      100% { transform: translateX(0px) translateY(0px); }
+    }
+
+    .store-header-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .store-logo {
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+      backdrop-filter: blur(10px);
+    }
+    .store-logo img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .store-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .store-description {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .store-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Product Grid */
+    .products-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--primary-color);
+      position: relative;
+      overflow: hidden;
+    }
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* No border-radius here as the parent .product-card handles it */
+    }
+
+    .product-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(255,255,255,0.1) 20px,
+        rgba(255,255,255,0.1) 40px
+      );
+    }
+
+    .product-image-icon {
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .product-info {
+      padding: 1.5rem;
+      flex-grow: 1; /* Allow product info to take up available space */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .product-description { /* New style for product description */
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        flex-grow: 1; /* Allows description to push price/button down */
+        word-wrap: break-word; /* Ensures long descriptions wrap */
+        overflow: hidden; /* Hide overflow if too long */
+        text-overflow: ellipsis; /* Add ellipsis for overflow */
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit to 3 lines */
+        -webkit-box-orient: vertical;
+    }
+
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-top: auto; /* Pushes price to the bottom before the button */
+      margin-bottom: 1rem;
+    }
+
+    .whatsapp-btn {
+      width: 100%;
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: var(--border-radius-small);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .whatsapp-btn:hover {
+      background: #128C7E;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .whatsapp-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    /* Footer */
+    .store-footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .contact-info {
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #25D366;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin: 0.5rem;
+    }
+
+    .contact-whatsapp:hover {
+      background: #128C7E;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .contact-whatsapp:active {
+      transform: translateY(0);
+    }
+
+    .powered-by {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+    }
+
+    .powered-by a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Share Button */
+    .share-store {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-hover);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .share-store:hover {
+      background: var(--primary-dark);
+      transform: scale(1.1);
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .error-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #ff4444;
+    }
+
+    .error-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .store-header {
+        padding: 1.5rem 1rem;
+      }
+
+      .store-name {
+        font-size: 1.8rem;
+      }
+
+      .store-description {
+        font-size: 1rem;
+      }
+
+      .store-stats {
+        gap: 1rem;
+      }
+
+      .container {
+        padding: 1rem 0.5rem;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .share-store {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .store-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+
+      .product-image {
+        height: 180px;
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+
+    /* Hidden by default for animation */
+    .product-card {
+      opacity: 0;
+    }
+
+    /* Preview Mode Banner */
+    .preview-banner {
+      background: #ff9800;
+      color: white;
+      text-align: center;
+      padding: 0.5rem;
+      font-weight: 600;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+    }
+
+    .preview-banner + .store-header {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading your store...</div>
+  </div>
+
+  <!-- Preview Mode Banner -->
+  <div class="preview-banner" id="previewBanner" style="display: none;">
+    🔍 PREVIEW MODE - This is how your store will look to customers
+  </div>
+
+  <!-- Store Header -->
+  <header class="store-header">
+    <div class="store-header-content">
+      <div class="store-logo" id="storeLogo">🏪</div>
+      <h1 class="store-name" id="storeName">Loading...</h1>
+      <p class="store-description" id="storeDescription"></p>
+      <div class="store-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="productCount">0</span>
+          <span class="stat-label">Products</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">⚡</span>
+          <span class="stat-label">Fast Delivery</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">💯</span>
+          <span class="stat-label">Quality</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Products Section -->
+    <section class="products-section">
+      <h2 class="section-title">Our Products</h2>
+      <div class="product-grid" id="productGrid">
+        <!-- Products will be inserted here -->
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">📦</div>
+      <h3>No Products Yet</h3>
+      <p>This store is still being set up. Check back soon!</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" id="errorState" style="display: none;">
+      <div class="error-state-icon">❌</div>
+      <h3>Store Not Found</h3>
+      <p>The store you're looking for doesn't exist or has been removed.</p>
+      <p><a href="/" style="color: var(--primary-color);">← Back to Home</a></p>
+    </div>
+  </div>
+
+  <!-- Store Footer -->
+  <footer class="store-footer">
+    <div class="contact-info">
+      <a href="#" class="contact-whatsapp" id="contactWhatsApp">
+        <span>💬</span>
+        <span>Chat on WhatsApp</span>
+      </a>
+    </div>
+    <div class="powered-by">
+      Powered by <a href="/">GenLay Store Maker</a>
+    </div>
+  </footer>
+
+  <!-- Share Button -->
+  <button class="share-store" id="shareStore" title="Share this store">
+    📤
+  </button>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.2/+esm';
+
+    // IMPORTANT: Replace these with your actual Supabase project URL and anon key
+    // You can find these in your Supabase project settings under 'API'.
+    const SUPABASE_URL = 'https://eztixsxfgvlfvthxnzro.supabase.co'; // <--- REPLACE THIS WITH YOUR SUPABASE PROJECT URL
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmcxMjM0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNjQ0MDAsImV4cCI6MTk5MzYwMDQwMH0'; // <--- REPLACE THIS WITH YOUR SUPABASE ANON KEY
+
+    // Verify if placeholder values are still in use
+    if (SUPABASE_URL === 'https://eztixsxfgvlfvthxnzro.supabase.co' || SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmcxMjM0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNjQ0MDAsImV4cCI6MTk5MzYwMDQwMH0') {
+        console.warn("Supabase credentials are placeholders. Please replace 'https://abcdefg1234.supabase.co' and 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmcxMjM0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNjQ0MDAsImV4cCI6MTk5MzYwMDQwMH0.your_dummy_anon_key_here' with your actual Supabase project URL and anon key for the app to connect to your database.");
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let storeData = null;
+    let isPreviewMode = false;
+
+    // Product icons for different categories
+    const productIcons = {
+      // Fashion & Clothing
+      'dress': '👗', 'shirt': '👕', 'bag': '👜', 'shoe': '👟', 'watch': '⌚',
+      'jacket': '🧥', 'hat': '👒', 'belt': '📿', 'jewelry': '💎', 'ring': '💍',
+      
+      // Electronics
+      'phone': '📱', 'laptop': '💻', 'camera': '📷', 'headphone': '🎧', 'speaker': '🔊',
+      'tablet': '📋', 'charger': '🔌', 'cable': '🔌',
+      
+      // Food & Drinks
+      'cake': '🎂', 'coffee': '☕', 'tea': '🍵', 'juice': '🥤', 'food': '🍽️',
+      'snack': '🍿', 'bread': '🍞', 'fruit': '🍎',
+      
+      // Beauty & Health
+      'perfume': '🌸', 'cream': '🧴', 'soap': '🧼', 'oil': '🫒', 'makeup': '💄',
+      
+      // Home & Living
+      'candle': '🕯️', 'pillow': '🛏️', 'plant': '🌱', 'decoration': '🏺',
+      
+      // Default
+      'default': '🛍️'
+    };
+
+    function getProductIcon(productName) {
+      const name = productName.toLowerCase();
+      
+      for (const [keyword, icon] of Object.entries(productIcons)) {
+        if (keyword !== 'default' && name.includes(keyword)) {
+          return icon;
+        }
+      }
+      
+      return productIcons.default;
+    }
+
+    function getStoreFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const storeSlug = urlParams.get('store');
+      const mode = urlParams.get('mode');
+      
+      isPreviewMode = mode === 'preview';
+      
+      return storeSlug;
+    }
+
+    async function loadStoreData(storeSlug) {
+      if (isPreviewMode) {
+        // Load preview data from localStorage
+        const previewData = localStorage.getItem('previewStore');
+        if (previewData) {
+          storeData = JSON.parse(previewData);
+          return; // Success, storeData is populated
+        } else {
+          throw new Error('Preview store data not found in local storage.');
+        }
+      } else {
+        // Load from Supabase
+        // Fetch store details first
+        const { data: store, error: storeError } = await supabase
+          .from('stores')
+          .select('*')
+          .eq('store_slug', storeSlug)
+          .single();
+
+        if (storeError) {
+          if (storeError.code === 'PGRST116') { // No rows found
+            throw new Error('Store not found.');
+          }
+          throw storeError;
+        }
+
+        if (!store) {
+          throw new Error('Store not found.');
+        }
+
+        // Fetch products for the store
+        const { data: products, error: productsError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('store_id', store.id)
+          .order('sort_order', { ascending: true }); // Order by sort_order if available
+
+        if (productsError) {
+          throw productsError;
+        }
+
+        storeData = { ...store, products: products || [] }; // Combine store and products
+        console.log("Loaded store data from Supabase:", storeData);
+      }
+    }
+
+    function applyTheme(theme) {
+      // Your existing theme application logic
+      const themeMap = {
+        'green': { '--primary-color': '#25D366', '--primary-dark': '#128C7E', '--primary-light': '#dcf8c6', '--accent-color': '#075e54', '--bg-primary': '#f9f9f9', '--bg-secondary': '#ffffff', '--text-primary': '#333', '--text-secondary': '#666' },
+        'blue': { '--primary-color': '#2196F3', '--primary-dark': '#1976D2', '--primary-light': '#e3f2fd', '--accent-color': '#0d47a1', '--bg-primary': '#f9f9f9', '--bg-secondary': '#ffffff', '--text-primary': '#333', '--text-secondary': '#666' },
+        'purple': { '--primary-color': '#9C27B0', '--primary-dark': '#7B1FA2', '--primary-light': '#f3e5f5', '--accent-color': '#4a148c', '--bg-primary': '#f9f9f9', '--bg-secondary': '#ffffff', '--text-primary': '#333', '--text-secondary': '#666' },
+        'orange': { '--primary-color': '#FF9800', '--primary-dark': '#F57C00', '--primary-light': '#fff3e0', '--accent-color': '#e65100', '--bg-primary': '#f9f9f9', '--bg-secondary': '#ffffff', '--text-primary': '#333', '--text-secondary': '#666' },
+        'pink': { '--primary-color': '#E91E63', '--primary-dark': '#C2185B', '--primary-light': '#fce4ec', '--accent-color': '#880e4f', '--bg-primary': '#f9f9f9', '--bg-secondary': '#ffffff', '--text-primary': '#333', '--text-secondary': '#666' },
+        'dark': { '--primary-color': '#424242', '--primary-dark': '#212121', '--primary-light': '#f5f5f5', '--accent-color': '#000000', '--bg-primary': '#303030', '--bg-secondary': '#424242', '--text-primary': '#ffffff', '--text-secondary': '#cccccc' }
+      };
+
+      const selectedThemeVars = themeMap[theme] || themeMap['green']; // Default to green if theme not found
+      for (const [prop, value] of Object.entries(selectedThemeVars)) {
+        document.documentElement.style.setProperty(prop, value);
+      }
+      document.body.className = `theme-${theme}`; // Add the theme class for specific styles if any
+    }
+
+    function renderStore() {
+      if (!storeData) return;
+
+      // Show preview banner if in preview mode
+      if (isPreviewMode) {
+        document.getElementById('previewBanner').style.display = 'block';
+      }
+
+      // Apply theme from storeData.theme_color (Supabase stores hex code) or storeData.theme (localStorage stores name)
+      const themeName = Object.keys(themeColors).find(key => themeColors[key] === storeData.theme_color) || storeData.theme || 'green';
+      applyTheme(themeName);
+
+
+      // Update page title and meta
+      const title = `${storeData.store_name || storeData.name} - Online Store`;
+      document.getElementById('pageTitle').textContent = title;
+      document.getElementById('pageDescription').content = storeData.description || `Shop ${storeData.store_name || storeData.name} products online`;
+      document.getElementById('ogTitle').content = title;
+      document.getElementById('ogDescription').content = storeData.description || `Shop ${storeData.store_name || storeData.name} products online`;
+      document.getElementById('ogUrl').content = window.location.href; // Set Open Graph URL
+
+      // Store header
+      document.getElementById('storeName').textContent = storeData.store_name || storeData.name;
+      document.getElementById('storeDescription').textContent = storeData.description || '';
+      document.getElementById('productCount').textContent = (storeData.products && storeData.products.length) ? storeData.products.length : 0;
+
+      // Products
+      renderProducts();
+
+      // Contact WhatsApp
+      const whatsappNumber = storeData.whatsapp_number || storeData.whatsapp; // Handle both Supabase and local storage formats
+      const whatsappLink = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi! I'm interested in your products from ${storeData.store_name || storeData.name}`;
+      document.getElementById('contactWhatsApp').href = whatsappLink;
+
+      // Show/hide empty state
+      if (!storeData.products || storeData.products.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.querySelector('.products-section').style.display = 'none';
+      }
+    }
+
+    function renderProducts() {
+      const productGrid = document.getElementById('productGrid');
+      
+      if (!storeData.products || storeData.products.length === 0) {
+        productGrid.innerHTML = '';
+        return;
+      }
+
+      productGrid.innerHTML = storeData.products.map((product, index) => {
+        // Use the first image_url if available, otherwise fall back to emoji
+        const productImageHtml = (product.image_urls && product.image_urls.length > 0)
+          ? `<img src="${product.image_urls[0]}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/200x200/cccccc/333333?text=Image+Error';">`
+          : `<span class="product-image-icon">${getProductIcon(product.name)}</span>`;
+
+        const whatsappNumber = storeData.whatsapp_number || storeData.whatsapp; // Handle both Supabase and local storage formats
+        const whatsappMessage = `Hi! I'm interested in *${product.name}* (${product.currency || '₦'}${product.price.toLocaleString()}) from ${storeData.store_name || storeData.name}`;
+        const whatsappLink = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+        
+        return `
+          <div class="product-card fade-in-up stagger-${Math.min(index + 1, 4)}">
+            <div class="product-image">
+              ${productImageHtml}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">${product.name}</h3>
+              <p class="product-description">${product.description || 'No description available.'}</p>
+              <div class="product-price">${product.currency || '₦'}${product.price.toLocaleString()}</div>
+              <a href="${whatsappLink}" class="whatsapp-btn" target="_blank">
+                <span>💬</span>
+                <span>Buy on WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Trigger animations
+      setTimeout(() => {
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.style.opacity = '1';
+        });
+      }, 100);
+    }
+
+    function setupShareButton() {
+      document.getElementById('shareStore').addEventListener('click', async () => {
+        const shareData = {
+          title: `${storeData.store_name || storeData.name} - Online Store`,
+          text: `Check out ${storeData.store_name || storeData.name}! ${storeData.description || 'Amazing products at great prices!'}`,
+          url: window.location.href
+        };
+
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+          } else {
+            // Fallback - copy to clipboard
+            // document.execCommand('copy') is deprecated, but more reliable in some iframe contexts
+            const textarea = document.createElement('textarea');
+            textarea.value = window.location.href;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('Store link copied to clipboard!');
+          }
+        } catch (error) {
+          // Fallback if navigator.share fails and execCommand also fails for some reason
+          try {
+            const textarea = document.createElement('textarea');
+            textarea.value = window.location.href;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('Store link copied to clipboard!');
+          } catch (clipboardError) {
+            showToast('Unable to share store link');
+          }
+        }
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-small);
+        font-weight: 600;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease-out;
+      `;
+      toast.textContent = message;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function showError() {
+      document.getElementById('errorState').style.display = 'block';
+      document.querySelector('.products-section').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none'; // Ensure empty state is hidden too
+      document.querySelector('.store-footer').style.display = 'none';
+      document.getElementById('shareStore').style.display = 'none'; // Hide share button on error
+    }
+
+    function hideLoading() {
+      const loadingScreen = document.getElementById('loadingScreen');
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 300);
+    }
+
+    // Initialize store
+    async function initStore() {
+      try {
+        const storeSlug = getStoreFromURL();
+        
+        if (!storeSlug) {
+          throw new Error('No store ID (slug) provided in URL.');
+        }
+
+        // Simulate loading time for better UX (only for non-preview mode if desired)
+        if (!isPreviewMode) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        await loadStoreData(storeSlug);
+        renderStore();
+        setupShareButton();
+        
+        hideLoading();
+        
+      } catch (error) {
+        console.error('Error loading store:', error);
+        hideLoading();
+        showError();
+      }
+    }
+
+    // Start the app
+    document.addEventListener('DOMContentLoaded', initStore);
+
+    // Add some interactive effects
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('whatsapp-btn')) {
+        // Add click animation
+        e.target.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          e.target.style.transform = '';
+        }, 150);
+      }
+    });
+
+    // Performance optimization - lazy load animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '50px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in-up');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements when they're added to the DOM
+    function observeElements() {
+      document.querySelectorAll('.product-card').forEach(card => {
+        observer.observe(card);
+      });
+    }
+
+    // Call after products are rendered, using a delay to ensure DOM update
+    setTimeout(observeElements, 500);
+  </script>
+</body>
+</html>
