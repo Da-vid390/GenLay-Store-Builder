@@ -60,7 +60,7 @@
       padding: 0.8rem;
       border-radius: 8px;
       border: 1px solid var(--border-color);
-      box-sizing: border-box; /* Important */
+      box-sizing: border-box;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
@@ -118,7 +118,7 @@
       margin-top: 1.5rem;
       padding: 0.8rem;
       border-radius: 6px;
-      display: none; /* Hidden by default */
+      display: none;
       font-weight: 500;
     }
 
@@ -169,11 +169,17 @@
 
   <script>
     // --- SUPABASE CONFIG ---
-    // IMPORTANT: Replace these with your actual Supabase project credentials
-    const SUPABASE_URL = 'https://eztixsxfgvlfvthxnzro.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmcxMjM0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNjQ0MDAsImV4cCI6MTk5MzYwMDQwMH0';
+    // NOTE: You need to replace these with your actual Supabase project credentials
+    const SUPABASE_URL = 'https://your-project.supabase.co';
+    const SUPABASE_ANON_KEY = 'your-anon-key-here';
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Initialize Supabase client
+    let supabaseClient;
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (error) {
+      console.error('Failed to initialize Supabase:', error);
+    }
 
     // --- UI ELEMENTS ---
     const messageDiv = document.getElementById('message');
@@ -186,8 +192,15 @@
     // --- HELPER FUNCTIONS ---
     function showMessage(text, type) {
       messageDiv.innerText = text;
-      messageDiv.className = type; // 'success' or 'error'
+      messageDiv.className = type;
       messageDiv.style.display = 'block';
+      
+      // Auto-hide success messages after 5 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 5000);
+      }
     }
 
     function setLoading(isLoading) {
@@ -199,9 +212,19 @@
 
     // --- AUTH FUNCTIONS ---
     async function handleSignup() {
+      console.log('Signup button clicked'); // Debug log
+      
+      // Check if Supabase is properly initialized
+      if (!supabaseClient) {
+        showMessage('❌ Configuration error. Please check Supabase setup.', 'error');
+        return;
+      }
+
       const storeName = storeNameInput.value.trim();
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
+
+      console.log('Form values:', { storeName, email, password: '***' }); // Debug log
 
       if (!storeName || !email || !password) {
         showMessage('Please fill in all fields.', 'error');
@@ -213,27 +236,44 @@
       }
 
       setLoading(true);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { store_name: storeName }
-        }
-      });
+      
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { store_name: storeName }
+          }
+        });
 
-      if (error) {
-        showMessage('❌ ' + error.message, 'error');
-      } else {
-        showMessage('✅ Account created! Please check your email for a confirmation link.', 'success');
-        // Clear inputs on success
-        storeNameInput.value = '';
-        emailInput.value = '';
-        passwordInput.value = '';
+        console.log('Signup response:', { data, error }); // Debug log
+
+        if (error) {
+          showMessage('❌ ' + error.message, 'error');
+        } else {
+          showMessage('✅ Account created! Please check your email for a confirmation link.', 'success');
+          // Clear inputs on success
+          storeNameInput.value = '';
+          emailInput.value = '';
+          passwordInput.value = '';
+        }
+      } catch (err) {
+        console.error('Signup error:', err);
+        showMessage('❌ An unexpected error occurred. Please try again.', 'error');
       }
+      
       setLoading(false);
     }
 
     async function handleLogin() {
+      console.log('Login button clicked'); // Debug log
+      
+      // Check if Supabase is properly initialized
+      if (!supabaseClient) {
+        showMessage('❌ Configuration error. Please check Supabase setup.', 'error');
+        return;
+      }
+
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
@@ -243,16 +283,39 @@
       }
 
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      try {
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
-      if (error) {
-        showMessage('❌ ' + error.message, 'error');
-      } else {
-        // No need for a message, just redirect
-        window.location.href = 'dashboard.html';
+        if (error) {
+          showMessage('❌ ' + error.message, 'error');
+        } else {
+          showMessage('✅ Login successful! Redirecting...', 'success');
+          // Simulate redirect (replace with actual redirect)
+          setTimeout(() => {
+            // window.location.href = 'dashboard.html';
+            showMessage('✅ Would redirect to dashboard.html', 'success');
+          }, 1500);
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        showMessage('❌ An unexpected error occurred. Please try again.', 'error');
       }
+      
       setLoading(false);
     }
+
+    // Add event listeners for Enter key support
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        handleSignup();
+      }
+    });
+
+    // Test button functionality on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Page loaded, buttons should be functional');
+    });
   </script>
 
 </body>
