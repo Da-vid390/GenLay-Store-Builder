@@ -170,8 +170,8 @@
   <script>
     // --- SUPABASE CONFIG ---
     // NOTE: You need to replace these with your actual Supabase project credentials
-    const SUPABASE_URL = 'https://eztixsxfgvlfvthxnzro.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmcxMjM0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgwNjQ0MDAsImV4cCI6MTk5MzYwMDQwMH0';
+    const SUPABASE_URL = 'https://your-project.supabase.co';
+    const SUPABASE_ANON_KEY = 'your-anon-key-here';
 
     // Initialize Supabase client
     let supabaseClient;
@@ -218,52 +218,6 @@
       if (!supabaseClient) {
         showMessage('❌ Configuration error. Please check Supabase setup.', 'error');
         return;
-      }
-
-      const storeName = storeNameInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      console.log('Form values:', { storeName, email, password: '***' }); // Debug log
-
-      if (!storeName || !email || !password) {
-        showMessage('Please fill in all fields.', 'error');
-        return;
-      }
-      if (password.length < 6) {
-        showMessage('Password must be at least 6 characters long.', 'error');
-        return;
-      }
-
-      setLoading(true);
-      
-      try {
-        const { data, error } = await supabaseClient.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { store_name: storeName }
-          }
-        });
-
-        console.log('Signup response:', { data, error }); // Debug log
-
-        if (error) {
-          showMessage('❌ ' + error.message, 'error');
-        } else {
-          showMessage('✅ Account created! Please check your email for a confirmation link.', 'success');
-          // Clear inputs on success
-          storeNameInput.value = '';
-          emailInput.value = '';
-          passwordInput.value = '';
-        }
-      } catch (err) {
-        console.error('Signup error:', err);
-        showMessage('❌ An unexpected error occurred. Please try again.', 'error');
-      }
-      
-      setLoading(false);
-    }
 
     async function handleLogin() {
       console.log('Login button clicked'); // Debug log
